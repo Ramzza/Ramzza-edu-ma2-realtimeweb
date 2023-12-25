@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Toolbar, { Item } from 'devextreme-react/toolbar';
 import Button from 'devextreme-react/button';
-import { Template } from 'devextreme-react/core/template';
 import UserPanel from '../user-panel/user-panel';
 import './header.scss';
+import { Template } from 'devextreme-react/core/template';
 
-export default function Header({ menuToggleEnabled, title, toggleMenu }) {
+export default function ({ menuToggleEnabled, title, toggleMenu }) {
   return (
     <header className="header-component">
       <Toolbar className="header-toolbar">
@@ -45,12 +44,3 @@ export default function Header({ menuToggleEnabled, title, toggleMenu }) {
     </header>
   );
 }
-
-Header.propTypes = {
-  menuToggleEnabled: PropTypes.bool.isRequired,
-  title: PropTypes.string,
-  toggleMenu: PropTypes.func.isRequired,
-};
-Header.defaultProps = {
-  title: '',
-};

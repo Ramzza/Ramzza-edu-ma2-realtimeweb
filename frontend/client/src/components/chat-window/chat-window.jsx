@@ -1,47 +1,54 @@
-/* eslint-disable no-underscore-dangle */
-import React, {
-  useState, useEffect, useRef,
-} from 'react';
-import PropTypes from 'prop-types';
-import { Button, List, TextBox } from 'devextreme-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
+import List from 'devextreme-react/list';
+import TextBox from 'devextreme-react/text-box';
+import Button from 'devextreme-react/button';
 
 import { useAuth } from '../../contexts/auth';
+import CrudFacade from '../../api/rest-api';
 
 import './chat-window.scss';
-import ChatSocket from '../../utils/chat-socket';
 
-function ChatWindow({ recipient }) {
-  const { user } = useAuth();
-  const [currentMessage, setCurrentMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+let userCache = [];
+
+function ChatWindow() {
+  const { user, setHomeUser, homeUser } = useAuth();
+  const [currentMessage, setCurrentMessage] = useState('asdf');
   const oList = useRef(null);
 
-  useEffect(() => {
-    ChatSocket().setOnlineUserChangeCallback(onMessageChange);
-    ChatSocket().setMessageChangeCallback(onMessageChange);
-  }, []);
+  let messages = [];
 
   useEffect(() => {
-    ChatSocket().selectDestination(recipient);
-  }, [recipient]);
+    // ChatSocket().setMessageChangeCallback(onMessageChange);
+    // ChatSocket().initCallbacks(user.username);
+    // ChatSocket().selectDestination(user.username === 'test' ? 'test1' : 'test');
+    CrudFacade().getAllUsers(onMessageChange);
+  }, [user, homeUser.username]);
 
-  const onMessageChange = () => {
-    const messageList = ChatSocket().getExistingMessages();
-    oList.current?._instance.option('items', messageList);
-    oList.current?._instance.scrollTo(oList.current?._instance.scrollHeight());
-    setMessages(messageList);
+  const onMessageChange = (aUsers) => {
+    // messages = ChatSocket().getExistingMessages();
+    // eslint-disable-next-line no-underscore-dangle
+    userCache = aUsers;
+    oList.current?._instance.option('items', userCache);
   };
 
   const onSend = () => {
-    if (currentMessage) {
-      ChatSocket().sendMessage(currentMessage);
-      setCurrentMessage('');
-    }
+    // ChatSocket().sendMessage(currentMessage);
   };
 
   const onTextChanged = (oEvent) => {
     setCurrentMessage(oEvent.value);
   };
+
+
+  const handleItemClick = (e) => {
+    let userTest = e.currentTarget.getInnerHTML()
+    CrudFacade().findUserById(userTest.split(' - ')[1], handleUserFound);
+  }
+
+  const handleUserFound = (user) => {
+    setHomeUser(user);
+  }
 
   const renderListItem = (item) => (
     <div
@@ -50,34 +57,26 @@ function ChatWindow({ recipient }) {
           ? 'zzAlignRight'
           : 'zzColorReceived'
       }
+      onClick={handleItemClick}
     >
-      {item.message}
+      {item.username} - {item.id}
     </div>
   );
 
   return (
-    <div className="zzBorder">
+    <div>
       <List
+        dataSource={userCache}
         height="450px"
-        items={messages}
         itemRender={renderListItem}
         ref={oList}
-        pageLoadMode="scrollBottom"
-        scrollByContent
       />
       <div className="zzRowContainer">
-        <TextBox
-          onValueChanged={onTextChanged}
-          value={currentMessage}
-          onEnterKey={onSend}
-        />
-        <Button onClick={onSend} text="OK" />
+        <TextBox onValueChanged={onTextChanged} />
+        <Button onClick={onSend} />
       </div>
     </div>
   );
 }
-
-ChatWindow.propTypes = { recipient: PropTypes.string };
-ChatWindow.defaultProps = { recipient: '' };
 
 export default ChatWindow;

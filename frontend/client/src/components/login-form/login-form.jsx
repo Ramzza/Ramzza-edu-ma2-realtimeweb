@@ -6,6 +6,7 @@ import Form, {
   ButtonItem,
   ButtonOptions,
   RequiredRule,
+  EmailRule,
 } from 'devextreme-react/form';
 import LoadIndicator from 'devextreme-react/load-indicator';
 import notify from 'devextreme/ui/notify';
@@ -13,7 +14,7 @@ import { useAuth } from '../../contexts/auth';
 
 import './login-form.scss';
 
-export default function LoginForm() {
+export default function () {
   const history = useHistory();
   const { signIn } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -73,7 +74,7 @@ export default function LoginForm() {
               {loading ? (
                 <LoadIndicator width="24px" height="24px" visible />
               ) : (
-                'Sign In'
+							  'Sign In'
               )}
             </span>
           </ButtonOptions>

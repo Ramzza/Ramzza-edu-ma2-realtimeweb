@@ -1,0 +1,5 @@
+- pipeline.id: pypeline-be
+  path.config: '/usr/share/logstash/pipeline/logstash-be.conf'
+- pipeline.id: pypeline-db
+  path.config: '/usr/share/logstash/pipeline/logstash-db.conf'
+  queue.type: persisted

@@ -1,63 +1,77 @@
 import React, { useState, useEffect } from 'react';
+import Form from 'devextreme-react/form';
 
 import { useAuth } from '../../contexts/auth';
 
 import CrudFacade from '../../api/rest-api';
 import './home.scss';
 
-function HomePage() {
-  const { user } = useAuth();
-  const [task, setTask] = useState({});
 
-  let oCrudFacade;
+const aNotVisibleFields = [
+  'uuid',
+  'password',
+];
+const aDisabledFields = ['id', 'username', 'firstName', 'lastName', 'address', 'email', 'phoneNumber', 'type'];
+
+function HomePage() {
+  const { user, updateUser, homeUser } = useAuth();
+  const [localUser, setLocalUser] = useState(homeUser);
 
   useEffect(() => {
-    oCrudFacade = CrudFacade();
+    setLocalUser(homeUser);
+  }, [homeUser.username]);
 
-    oCrudFacade.getTasksForUser(user.username, (aData) => {
-      let tasks = aData;
-      if (!tasks.sort) {
-        tasks = [];
-      }
-      tasks = tasks.filter((t) => t.owner === user.username);
-      if (tasks.length === 0) {
-        tasks.push({ title: '', description: '', date_starts: null });
-      } else {
-        tasks.sort((a, b) => a.date_starts > b.date_starts);
-      }
-      setTask(tasks[0]);
+  const customizeItem = (item) => {
+    const formItem = item;
+
+    if (aNotVisibleFields.indexOf(formItem.dataField) !== -1) {
+      formItem.visible = false;
+    }
+
+    if (aDisabledFields.indexOf(formItem.dataField) !== -1) {
+      formItem.disabled = true;
+    }
+  };
+
+  const onFieldDataChanged = () => {
+    CrudFacade().patchUser(localUser, (oData) => {
+      updateUser(oData);
     });
-  }, []);
+  };
 
   return (
-    <div className="form" style={{ width: '50%' }}>
-      <div className="dx-fieldset">
-        <div className="dx-fieldset-header">
-          Hello,
-          {' '}
-          {user.firstname}
+    <>
+      <h2 className="content-block">Profile</h2>
+
+      <div className="content-block dx-card responsive-paddings">
+        <div className="form-avatar">
+          <img
+            alt=""
+            src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/${user.Picture}`}
+          />
         </div>
-        <div className="dx-field">
-          <div className="dx-field-label">Next Task</div>
-          <div className="dx-field-value-static">
-            {task.title}
-          </div>
-        </div>
-        <div className="dx-field">
-          <div className="dx-field-label">Description</div>
-          <div className="dx-field-value-static">
-            {task.description}
-          </div>
-        </div>
-        <div className="dx-field">
-          <div className="dx-field-label">Deadline</div>
-          <div className="dx-field-value-static">
-            {task.date_starts}
-          </div>
-        </div>
+        <div>{localUser.username}</div>
+        <div>{localUser.cnp}</div>
       </div>
-    </div>
+
+      <div className="content-block dx-card responsive-paddings">
+        <Form
+          id="form"
+          formData={localUser}
+          onFieldDataChanged={onFieldDataChanged}
+          labelLocation="top"
+          colCountByScreen={colCountByScreen}
+          customizeItem={customizeItem}
+        />
+      </div>
+    </>
   );
 }
 
+const colCountByScreen = {
+  xs: 1,
+  sm: 2,
+  md: 3,
+  lg: 4,
+};
 export default HomePage;

@@ -15,14 +15,11 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "rules": {
-        // note you must disable the base rule as it can report incorrect errors
-        "no-use-before-define": "off",
-        "react/forbid-prop-types": "off",
-        "react/jsx-props-no-spreading":"off"
-      },
     "plugins": [
         "react",
         "@typescript-eslint"
-    ]
+    ],
+    "rules": {
+        "no-use-before-define" : "off"
+    }
 }

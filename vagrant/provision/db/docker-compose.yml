@@ -1,0 +1,38 @@
+version: '3.2'
+
+services:
+  mongodb:
+    build:
+      context: db/
+    command: ['-vvvvv', '--logpath', '/var/log/mongodb/mongod.log']
+    labels:
+      co.elastic.logs/module: mongodb
+    ports:
+      - '3002:27017'
+    networks:
+      - devops_db_net
+    volumes:
+      - type: volume
+        source: db-data
+        target: /var/log/mongodb/
+
+  filebeats:
+    build:
+      context: filebeat/
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - type: volume
+        source: db-data
+        target: /usr/share/dblogs
+    user: root
+    networks:
+      - devops_db_net
+    depends_on:
+      - mongodb
+
+networks:
+  devops_db_net:
+    driver: bridge
+
+volumes:
+  db-data:

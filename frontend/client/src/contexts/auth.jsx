@@ -4,20 +4,20 @@ import React, {
   createContext,
   useContext,
   useCallback,
-  useMemo,
 } from 'react';
 import { getUser, signIn as sendSignInRequest } from '../api/auth';
-import ChatSocket from '../utils/chat-socket';
 
 function AuthProvider(props) {
   const [user, setUser] = useState();
+  const [homeUser, setHomeUser] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async function setCurrentUser() {
+    (async function () {
       const result = await getUser();
       if (result.isOk) {
         setUser(result.data);
+        setHomeUser(result.data);
       }
 
       setLoading(false);
@@ -27,8 +27,8 @@ function AuthProvider(props) {
   const signIn = useCallback(async (email, password) => {
     const result = await sendSignInRequest(email, password);
     if (result.isOk) {
-      ChatSocket().registerUserToChat(result.data.username);
       setUser(result.data);
+      setHomeUser(result.data);
     }
 
     return result;
@@ -42,20 +42,15 @@ function AuthProvider(props) {
     setUser(oUser);
   }, []);
 
-  const memoUser = useMemo(
-    () => ({
-      user,
-      updateUser,
-      signIn,
-      signOut,
-      loading,
-    }),
-    [user, loading],
-  );
-
   return (
     <AuthContext.Provider
-      value={memoUser}
+      value={{
+        user,
+        updateUser,
+        signIn,
+        signOut,
+        loading, homeUser, setHomeUser
+      }}
       {...props}
     />
   );

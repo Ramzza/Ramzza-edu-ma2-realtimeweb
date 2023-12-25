@@ -1,0 +1,1 @@
+FROM database_filebeats:latest

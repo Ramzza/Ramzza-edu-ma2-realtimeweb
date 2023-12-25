@@ -1,35 +1,29 @@
 import React, {
-  useState, createContext, useContext, useEffect, useMemo,
+  useState, createContext, useContext, useEffect,
 } from 'react';
-import PropTypes from 'prop-types';
 
 const NavigationContext = createContext({});
 const useNavigation = () => useContext(NavigationContext);
 
 function NavigationProvider(props) {
   const [navigationData, setNavigationData] = useState({});
-  const memoNavData = useMemo(() => ({ navigationData, setNavigationData }), [navigationData]);
 
   return (
     <NavigationContext.Provider
-      value={memoNavData}
+      value={{ navigationData, setNavigationData }}
       {...props}
     />
   );
 }
 
 function withNavigationWatcher(Component) {
-  return function NavigationWatcher(props) {
-    NavigationWatcher.propTypes = {
-      match: PropTypes.object.isRequired,
-    };
-
-    const { match } = props;
+  return function (props) {
+    const { path } = props.match;
     const { setNavigationData } = useNavigation();
 
     useEffect(() => {
-      setNavigationData({ currentPath: match.path });
-    }, [match.path, setNavigationData]);
+      setNavigationData({ currentPath: path });
+    }, [path, setNavigationData]);
 
     return React.createElement(Component, props);
   };

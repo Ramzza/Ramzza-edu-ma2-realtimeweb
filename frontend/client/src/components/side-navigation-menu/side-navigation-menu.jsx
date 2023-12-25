@@ -1,24 +1,23 @@
 import React, {
   useEffect, useRef, useCallback, useMemo,
 } from 'react';
-import PropTypes from 'prop-types';
 import TreeView from 'devextreme-react/tree-view';
-import * as events from 'devextreme/events';
-import { navigation } from '../../constants/app-navigation';
+import ChatUserList from '../chat-user-list/chat-user-list';
+import { navigation } from '../../app-navigation';
 import { useNavigation } from '../../contexts/navigation';
 import { useScreenSize } from '../../utils/media-query';
 import './side-navigation-menu.scss';
 
-export default function SideNavigationMenu(props) {
+import * as events from 'devextreme/events';
+
+export default function (props) {
   const {
-    // eslint-disable-next-line react/prop-types
     children, selectedItemChanged, openMenu, compactMode, onMenuReady,
-  } = props;
+  } =		props;
 
   const { isLarge } = useScreenSize();
   function normalizePath() {
-    return navigation.map((navigationItem) => {
-      const item = { ...navigationItem };
+    return navigation.map((item) => {
       if (item.path && !/^\//.test(item.path)) {
         item.path = `/${item.path}`;
       }
@@ -28,6 +27,7 @@ export default function SideNavigationMenu(props) {
 
   const items = useMemo(
     normalizePath,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -90,10 +90,3 @@ export default function SideNavigationMenu(props) {
     </div>
   );
 }
-
-SideNavigationMenu.propTypes = {
-  selectedItemChanged: PropTypes.func.isRequired,
-  openMenu: PropTypes.func.isRequired,
-  compactMode: PropTypes.bool.isRequired,
-  onMenuReady: PropTypes.func.isRequired,
-};

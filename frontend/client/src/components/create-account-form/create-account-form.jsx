@@ -14,7 +14,7 @@ import LoadIndicator from 'devextreme-react/load-indicator';
 import { createAccount } from '../../api/auth';
 import './create-account-form.scss';
 
-export default function CreateAccountForm() {
+export default function (props) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const formData = useRef({});
@@ -81,13 +81,16 @@ export default function CreateAccountForm() {
           <EmailRule message="Email is invalid" />
           <Label visible={false} />
         </Item>
-        <Item
-          dataField="cnp"
-          editorType="dxTextBox"
-          editorOptions={cnpEditorOptions}
-        >
-          <RequiredRule message="CNP is required" />
-          <Label visible={false} />
+        <Item>
+          <div className="policy-info">
+            By creating an account, you agree to the
+            {' '}
+            <Link to="#">Terms of Service</Link>
+            {' '}
+            and
+            {' '}
+            <Link to="#">Privacy Policy</Link>
+          </div>
         </Item>
         <ButtonItem>
           <ButtonOptions

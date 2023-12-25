@@ -33,7 +33,7 @@ export const useScreenSizeClass = () => {
   }
 
   return 'screen-x-small';
-};
+}
 
 let handlers = [];
 const xSmallMedia = window.matchMedia('(max-width: 599.99px)');
@@ -41,17 +41,16 @@ const smallMedia = window.matchMedia('(min-width: 600px) and (max-width: 959.99p
 const mediumMedia = window.matchMedia('(min-width: 960px) and (max-width: 1279.99px)');
 const largeMedia = window.matchMedia('(min-width: 1280px)');
 
-[xSmallMedia, smallMedia, mediumMedia, largeMedia].forEach((media) => {
-  media.addEventListener('', (e) => {
-    // eslint-disable-next-line no-unused-expressions
-    e.matches && handlers.forEach((handler) => handler());
+[xSmallMedia, smallMedia, mediumMedia, largeMedia].forEach(media => {
+  media.addListener((e) => {
+    e.matches && handlers.forEach(handler => handler());
   });
 });
 
-const subscribe = (handler) => handlers.push(handler);
+const subscribe = handler => handlers.push(handler);
 
-const unsubscribe = (handler) => {
-  handlers = handlers.filter((item) => item !== handler);
+const unsubscribe = handler => {
+  handlers = handlers.filter(item => item !== handler);
 };
 
 function getScreenSize() {
@@ -59,6 +58,6 @@ function getScreenSize() {
     isXSmall: xSmallMedia.matches,
     isSmall: smallMedia.matches,
     isMedium: mediumMedia.matches,
-    isLarge: largeMedia.matches,
+    isLarge: largeMedia.matches
   };
 }

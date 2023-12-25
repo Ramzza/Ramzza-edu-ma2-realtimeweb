@@ -2,48 +2,45 @@ const winston = require('winston');
 const moment = require('moment-timezone');
 
 const appendTimestamp = winston.format((info, opts) => {
-  const information = { ...info };
-  if (opts.tz) information.timestamp = moment().tz(opts.tz).format();
-  return information;
+	if (opts.tz) info.timestamp = moment().tz(opts.tz).format();
+	return info;
 });
 
 const logger = winston.createLogger({
-  format: winston.format.combine(
-    winston.format.label({ label: 'BE' }),
-    appendTimestamp({ tz: 'Europe/Bucharest' }),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.File({
-      filename: './logger/logs/backend.log',
-      // handleExceptions: true,
-      json: false,
-    }),
-  ],
+	format: winston.format.combine(
+		winston.format.label({ label: 'BE' }),
+		appendTimestamp({ tz: 'Europe/Bucharest' }),
+		winston.format.json()
+	),
+	transports: [
+		new winston.transports.File({
+			filename: './logger/logs/backend.log',
+			// handleExceptions: true,
+			json: false,
+		}),
+	],
 });
 
-const myLogger = {};
-myLogger.info = function logInfo(sMessage, sComponent) {
-  let sLog = '';
-  let sComponentName = sComponent;
+var myLogger = {};
+myLogger.info = function (sMessage, sComponent) {
+	var sLog = '';
 
-  if (!sComponentName) {
-    sComponentName = 'misc';
-  }
+	if (!sComponent) {
+		sComponent = 'misc';
+	}
 
-  sLog = `${sComponentName}~~${sMessage}`;
-  logger.info(sLog);
+	sLog = sComponent + '~~' + sMessage;
+	logger.info(sLog);
 };
-myLogger.error = function logError(sMessage, sComponent) {
-  let sLog = '';
-  let sComponentName = sComponent;
+myLogger.error = function (sMessage, sComponent) {
+	var sLog = '';
 
-  if (!sComponentName) {
-    sComponentName = 'misc';
-  }
+	if (!sComponent) {
+		sComponent = 'misc';
+	}
 
-  sLog = `${sComponentName}~~${sMessage}`;
-  logger.error(sLog);
+	sLog = sComponent + '~~' + sMessage;
+	logger.error(sLog);
 };
 
 module.exports = myLogger;

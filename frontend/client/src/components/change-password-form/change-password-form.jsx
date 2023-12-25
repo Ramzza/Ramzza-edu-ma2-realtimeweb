@@ -12,7 +12,7 @@ import LoadIndicator from 'devextreme-react/load-indicator';
 import notify from 'devextreme/ui/notify';
 import { changePassword } from '../../api/auth';
 
-export default function ChangePasswordForm() {
+export default function (props) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const formData = useRef({});
@@ -35,42 +35,42 @@ export default function ChangePasswordForm() {
 
   const confirmPassword = useCallback(
     ({ value }) => value === formData.current.password,
-    [],
+    []
   );
 
   return (
     <form onSubmit={onSubmit}>
       <Form formData={formData.current} disabled={loading}>
         <Item
-          dataField="password"
-          editorType="dxTextBox"
+          dataField={'password'}
+          editorType={'dxTextBox'}
           editorOptions={passwordEditorOptions}
         >
           <RequiredRule message="Password is required" />
           <Label visible={false} />
         </Item>
         <Item
-          dataField="confirmedPassword"
-          editorType="dxTextBox"
+          dataField={'confirmedPassword'}
+          editorType={'dxTextBox'}
           editorOptions={confirmedPasswordEditorOptions}
         >
           <RequiredRule message="Password is required" />
           <CustomRule
-            message="Passwords do not match"
+            message={'Passwords do not match'}
             validationCallback={confirmPassword}
           />
           <Label visible={false} />
         </Item>
         <ButtonItem>
           <ButtonOptions
-            width="100%"
-            type="default"
-            useSubmitBehavior
+            width={'100%'}
+            type={'default'}
+            useSubmitBehavior={true}
           >
             <span className="dx-button-text">
               {
                 loading
-                  ? <LoadIndicator width="24px" height="24px" visible />
+                  ? <LoadIndicator width={'24px'} height={'24px'} visible={true} />
                   : 'Continue'
               }
             </span>

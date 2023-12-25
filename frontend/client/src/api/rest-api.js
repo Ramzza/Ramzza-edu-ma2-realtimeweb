@@ -1,8 +1,6 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable class-methods-use-this */
 // facade
 
-import CurrentUser from '../utils/current-user';
+import CurrentUser from "../utils/current-user";
 
 class CrudFacade {
   static instance = CrudFacade.instance || new CrudFacade();
@@ -23,94 +21,61 @@ class CrudFacade {
     return CurrentUser;
   }
 
-  patchUser(oUser, fnCallback) {
-    const sReq = `/users/${oUser._id}`;
+  getAllUsers(fnCallback) {
+    const sReq = "/users/";
     fetch(sReq, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(oUser),
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
-      .then(() => {
-        fnCallback();
+      .then((users) => {
+        fnCallback(users);
       });
   }
 
-  getTasksForUser(sUser, fnCallback) {
-    const sReq = `/tasks/${sUser}`;
-
-    fetch(sReq)
-      .then((res) => res.json())
-      .then((tasks) => {
-        fnCallback(tasks);
-      });
-  }
-
-  patchTask(oTask, fnCallback) {
-    const sReq = `/tasks/${oTask._id}`;
+  getAllBooks(fnCallback) {
+    const sReq = "/books/";
     fetch(sReq, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(oTask),
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
-      .then(() => {
-        fnCallback();
+      .then((books) => {
+        fnCallback(books);
       });
   }
 
-  postTask(oTask, fnCallback) {
-    fetch('/tasks/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(oTask),
+  postBook(oBook, fnCallback) {
+    fetch("/books/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(oBook),
     })
       .then((res) => res.json())
-      .then((newTask) => {
-        fnCallback(newTask);
+      .then((newBook) => {
+        fnCallback(newBook);
+      });
+  }
+
+  findUserById(id, fnCallback) {
+    const sReq = "/users/" + id;
+    fetch(sReq, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((user) => {
+        fnCallback(user);
       });
   }
 
   deleteTask(sId, fnCallback) {
-    const sReq = `/tasks/${sId}`;
+    const sReq = "/tasks/" + sId;
     fetch(sReq, {
-      method: 'DELETE',
+      method: "DELETE",
     })
       .then((res) => res.json())
-      .then(() => {
-        fnCallback();
-      });
-  }
-
-  getPosts(fnCallback) {
-    const sReq = '/posts';
-
-    fetch(sReq)
-      .then((res) => res.json())
-      .then((posts) => {
-        fnCallback(posts);
-      });
-  }
-
-  postPost(oPost, fnCallback) {
-    fetch('/posts/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(oPost),
-    })
-      .then((res) => res.json())
-      .then((newPost) => {
-        fnCallback(newPost);
-      });
-  }
-
-  deletePost(sId, fnCallback) {
-    const sReq = `/posts/${sId}`;
-    fetch(sReq, {
-      method: 'DELETE',
-    })
-      .then((res) => res.json())
-      .then(() => {
+      .then((task) => {
         fnCallback();
       });
   }

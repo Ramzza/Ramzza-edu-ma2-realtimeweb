@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import ContextMenu, { Position } from 'devextreme-react/context-menu';
-import { List } from 'devextreme-react';
+import List from 'devextreme-react/list';
 import { useAuth } from '../../contexts/auth';
 import './user-panel.scss';
 
-export default function UserPanel({ menuMode }) {
+export default function ({ menuMode }) {
   const { user, signOut } = useAuth();
   const history = useHistory();
 
@@ -34,10 +33,10 @@ export default function UserPanel({ menuMode }) {
       <div className="user-info">
         <div className="image-container">
           <div
-            // style={{
-            //   background: `url(${user.avatarUrl}) no-repeat #fff`,
-            //   backgroundSize: 'cover'
-            // }}
+						// style={{
+						//   background: `url(${user.avatarUrl}) no-repeat #fff`,
+						//   backgroundSize: 'cover'
+						// }}
             className="user-image"
           />
         </div>
@@ -61,7 +60,3 @@ export default function UserPanel({ menuMode }) {
     </div>
   );
 }
-
-UserPanel.propTypes = {
-  menuMode: PropTypes.string.isRequired,
-};
